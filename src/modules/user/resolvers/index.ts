@@ -1,11 +1,4 @@
-import {
-  Arg,
-  FieldResolver,
-  Mutation,
-  Query,
-  Resolver,
-  Root,
-} from "type-graphql";
+import { Arg, Mutation, Query, Resolver } from "type-graphql";
 import bcrypt from "bcryptjs";
 import { User } from "../entity";
 
@@ -20,11 +13,6 @@ export class UserResolver {
   async user(@Arg("id") id: number): Promise<User | undefined> {
     const user = await User.findOneOrFail(id);
     return user;
-  }
-
-  @FieldResolver()
-  async name(@Root() parent: User) {
-    return `${parent.firstName} ${parent.lastName}`;
   }
 
   @Mutation(() => User)
