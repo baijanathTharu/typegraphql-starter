@@ -11,12 +11,13 @@ import Redis from "ioredis";
 import cors from "cors";
 
 import { UserResolver } from "./modules/user/resolvers";
+import { LoginResolver } from "./modules/user/resolvers/login";
 
 const main = async () => {
   await createConnection();
 
   const schema = await buildSchema({
-    resolvers: [UserResolver],
+    resolvers: [UserResolver, LoginResolver],
   });
 
   const apolloServer = new ApolloServer({
@@ -62,7 +63,7 @@ const main = async () => {
 
   apolloServer.applyMiddleware({ app });
 
-  app.listen(1721, () => {
+  app.listen(1729, () => {
     console.log("Server listening at http://localhost:1729/graphql");
   });
 };

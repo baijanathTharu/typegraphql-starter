@@ -1,13 +1,22 @@
-import { Arg, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import bcrypt from "bcryptjs";
 import { User } from "../entity";
 import { RegisterInput } from "../inputs/register_input";
+import { MyContext } from "src/types/my_context";
 
 @Resolver(User)
 export class UserResolver {
   @Query(() => String)
   async hello() {
     return "Hello World!";
+  }
+
+  @Query(() => User, { nullable: true })
+  async me(@Ctx() ctx: MyContext): Promise<User | undefined> {
+    if (!ctx.req.session.userId) {
+      return undefined;
+    }
+    return User.findOne(ctx.req.session.userId);
   }
 
   @Query(() => User)
