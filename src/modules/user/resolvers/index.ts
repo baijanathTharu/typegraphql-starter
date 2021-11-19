@@ -1,12 +1,20 @@
-import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
+import {
+  Arg,
+  Ctx,
+  Mutation,
+  Query,
+  Resolver,
+  UseMiddleware,
+} from "type-graphql";
 import bcrypt from "bcryptjs";
 import { User } from "../entity";
 import { RegisterInput } from "../inputs/register_input";
-import { MyContext } from "src/types/my_context";
+import { MyContext } from "../../../types/my_context";
+import { isAuth, logger } from "../../../middlewares";
 
 @Resolver(User)
 export class UserResolver {
-  @Authorized()
+  @UseMiddleware(isAuth)
   @Query(() => String)
   async hello() {
     return "Hello World!";
@@ -20,6 +28,7 @@ export class UserResolver {
     return User.findOne(ctx.req.session.userId);
   }
 
+  @UseMiddleware(logger)
   @Query(() => User)
   async user(@Arg("id") id: number): Promise<User | undefined> {
     const user = await User.findOneOrFail(id);
