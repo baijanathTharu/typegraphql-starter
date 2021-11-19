@@ -18,6 +18,13 @@ const main = async () => {
 
   const schema = await buildSchema({
     resolvers: [UserResolver, LoginResolver],
+    authChecker: ({ context: { req } }) => {
+      // `@Authorized(arg)`
+      // Argument passed in the Authorized decorator can
+      // be accessed as the second parameter of `authChecker`
+
+      return !!req.session.userId;
+    },
   });
 
   const apolloServer = new ApolloServer({
